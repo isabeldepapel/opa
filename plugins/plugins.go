@@ -187,6 +187,10 @@ type Manager struct {
 	printHook                    print.Hook
 	enablePrintStatements        bool
 	router                       *mux.Router
+
+	// adding trigger defaults here until there's time to fiddle with the config
+	MinimumTriggerThreshold int
+	TriggerTimeout          int
 }
 
 type managerContextKey string

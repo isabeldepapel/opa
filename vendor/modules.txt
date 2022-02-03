@@ -22,6 +22,7 @@ github.com/cespare/xxhash/v2
 # github.com/cpuguy83/go-md2man/v2 v2.0.1
 github.com/cpuguy83/go-md2man/v2/md2man
 # github.com/davecgh/go-spew v1.1.1
+## explicit
 github.com/davecgh/go-spew/spew
 # github.com/dgraph-io/badger/v3 v3.2103.2
 ## explicit
@@ -360,3 +361,4 @@ google.golang.org/protobuf/types/known/wrapperspb
 gopkg.in/yaml.v2
 # gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b
 gopkg.in/yaml.v3
+# github.com/open-policy-agent/opa/plugins/lambda => github.com/isabeldepapel/opa/plugins/lambda@f-lambda-extension v0.0.0

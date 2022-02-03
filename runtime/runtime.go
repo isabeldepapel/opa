@@ -203,6 +203,19 @@ type Params struct {
 	Router *mux.Router
 
 	DistributedTracingOpts tracing.Options
+
+	// LambdaExtensionEnabled flag controls whether lambda extension functionalisty has been
+	// enabled. This will allow the plugin to register directly with the runtime rather than
+	// as a plugin. Required if using lambda extension with discovery.
+	LambdaExtensionEnabled bool
+
+	// MinimumTriggerThreshold is the number of seconds that must elapse before plugins will be triggered
+	// by a lambda function invocation. Defaults to 30. Only used if LambdaExtensionEnabled is true.
+	MinimumTriggerThreshold int
+
+	// TriggerTimeout is the number of seconds that ALL plugins have to complete their trigger before
+	// they are canceled. Defaults to 7. Only used if LambdaExtensionEnabled is true.
+	TriggerTimeout int
 }
 
 // LoggingConfig stores the configuration for OPA's logging behaviour.

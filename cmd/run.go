@@ -16,6 +16,7 @@ import (
 
 	"github.com/spf13/cobra"
 
+	"github.com/open-policy-agent/opa/plugins/lambda"
 	"github.com/open-policy-agent/opa/runtime"
 	"github.com/open-policy-agent/opa/server"
 	"github.com/open-policy-agent/opa/util"
@@ -158,6 +159,14 @@ To skip bundle verification, use the --skip-verify flag.
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := context.Background()
 			rt, err := initRuntime(ctx, cmdParams, args)
+
+			// Check for lambda extension and register if enabled
+			if cmdParams.rt.LambdaExtensionEnabled {
+				lambdaPluginFactory := lambda.PluginFactory{}
+				rt.Manager.MinimumTriggerThreshold = cmdParams.rt.MinimumTriggerThreshold
+				rt.Manager.TriggerTimeout = cmdParams.rt.TriggerTimeout
+				rt.Manager.Register(lambda.Name, lambdaPluginFactory.New(rt.Manager, nil))
+			}
 			if err != nil {
 				fmt.Println("error:", err)
 				os.Exit(1)
@@ -193,6 +202,13 @@ To skip bundle verification, use the --skip-verify flag.
 	addBundleModeFlag(runCommand.Flags(), &cmdParams.rt.BundleMode, false)
 	runCommand.Flags().BoolVar(&cmdParams.skipVersionCheck, "skip-version-check", false, "disables anonymous version reporting (see: https://www.openpolicyagent.org/docs/latest/privacy)")
 	addIgnoreFlag(runCommand.Flags(), &cmdParams.ignore)
+
+	// Flag for enabling lambda extension
+	// Needed for registering the lambda extension directly with the runtime since setting it up with a config
+	// conflicts with discovery
+	runCommand.Flags().BoolVar(&cmdParams.rt.LambdaExtensionEnabled, "lambda-extension", false, "enables lambda extension")
+	runCommand.Flags().IntVar(&cmdParams.rt.MinimumTriggerThreshold, "min-trigger-threshold", 30, "set the number of seconds that must elapse before plugins will be triggered by a lambda function invocation")
+	runCommand.Flags().IntVar(&cmdParams.rt.TriggerTimeout, "trigger-timeout", 7, "set the number of seconds that all plugins have to complete their trigger before they are canceled")
 
 	// bundle verification config
 	addVerificationKeyFlag(runCommand.Flags(), &cmdParams.pubKey)
